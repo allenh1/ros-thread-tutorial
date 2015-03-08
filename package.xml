@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>ros_threading_example</name>
+  <version>0.0.1</version>
+  <description>Simple threading example.</description>
+  <license>BSD</license>
+  <maintainer email="allen286@purdue.edu">Hunter Allen</maintainer>
+  <author email="allen286@purdue.edu">Hunter Allen</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>qt-ros</build_depend>
+  
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>qt-ros</run_depend>
+</package>
