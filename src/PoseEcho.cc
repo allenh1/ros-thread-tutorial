@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Subscriber sub = n.subscribe("pose", 1000, poseCallback);
+  ros::Subscriber sub = n.subscribe("odom", 1000, poseCallback);
 
   ros::spin();
 
