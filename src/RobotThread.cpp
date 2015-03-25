@@ -1,9 +1,8 @@
 #include "RobotThread.h"
 
-RobotThread::RobotThread(int argc, char** pArgv, const char * topic)
+RobotThread::RobotThread(int argc, char** pArgv)
     : m_Init_argc(argc),
-        m_pInit_argv(pArgv),
-        m_topic(topic)
+      m_pInit_argv(pArgv)
 {/** Constructor for the robot thread **/}
 
 RobotThread::~RobotThread()
@@ -19,7 +18,7 @@ RobotThread::~RobotThread()
 
 bool RobotThread::init()
 {
-    ros::init(m_Init_argc, m_pInit_argv, "gui_command");
+    ros::init(m_Init_argc, m_pInit_argv, "pose_echo_threaded");
 
     if (!ros::master::check())
         return false;//do not if ros is not running
@@ -28,25 +27,32 @@ bool RobotThread::init()
     ros::Time::init();
     ros::NodeHandle nh;
 
-    pose_listener = nh.subscribe(m_topic, 10, &RobotThread::poseCallback, this);
+    pose_listener = nh.subscribe("odom", 100, &RobotThread::poseCallback, this);
+    pose2d_pub = nh.advertise<Pose2D>("/pose2d", 100);
     start();
     return true;
 }//set up the ros toys.
 
 void RobotThread::poseCallback(nav_msgs::Odometry msg)
 {
-    float m_xPos = msg.pose.pose.position.x;
-    float m_yPos = msg.pose.pose.position.y;
-    float m_aPos = msg.pose.pose.orientation.w;
+    m_xPos = msg.pose.pose.position.x;
+    m_yPos = msg.pose.pose.position.y;
+    m_aPos = msg.pose.pose.orientation.w;
 
-    ROS_INFO("Pose: (%f, %f, %f)", m_xPos, m_yPos, m_aPos);
+    std::printf("Pose: (%.4f, %.4f, %.4f)\n", m_xPos, m_yPos, m_aPos);
 }//callback method to echo the robot's position
 
+//3.3 MiB threaded.
+//
 void RobotThread::run()
 {
-    ros::Rate loop_rate(1);
+    ros::Rate loop_rate(1000);
     while (ros::ok())
     {
+        poseMessage.xPose = m_xPos;
+        poseMessage.yPose = m_yPos;
+        pose2d_pub.publish(poseMessage);
+
         ros::spinOnce();
         loop_rate.sleep();
     }//run while ROS is ok.
