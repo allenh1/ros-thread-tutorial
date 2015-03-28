@@ -31,7 +31,7 @@ bool RobotThread::init()
     pose2d_pub = nh.advertise<Pose2D>("/pose2d", 100);
     start();
     return true;
-}//set up the ros toys.
+}//set up ros
 
 void RobotThread::poseCallback(nav_msgs::Odometry msg)
 {
