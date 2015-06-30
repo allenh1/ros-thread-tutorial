@@ -33,7 +33,7 @@ bool RobotThread::init()
     return true;
 }//set up ros
 
-void RobotThread::poseCallback(nav_msgs::Odometry msg)
+void RobotThread::poseCallback(const nav_msgs::Odometry & msg)
 {
     m_xPos = msg.pose.pose.position.x;
     m_yPos = msg.pose.pose.position.y;
@@ -42,8 +42,6 @@ void RobotThread::poseCallback(nav_msgs::Odometry msg)
     std::printf("Pose: (%.4f, %.4f, %.4f)\n", m_xPos, m_yPos, m_aPos);
 }//callback method to echo the robot's position
 
-//3.3 MiB threaded.
-//
 void RobotThread::run()
 {
     ros::Rate loop_rate(1000);

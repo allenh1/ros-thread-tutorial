@@ -23,7 +23,7 @@ public:
   bool init();
   void run();
 
-  void poseCallback(nav_msgs::Odometry msg);
+  void poseCallback(const nav_msgs::Odometry & msg);
 
 private:
   int m_Init_argc;
