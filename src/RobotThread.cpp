@@ -18,6 +18,11 @@ RobotThread::~RobotThread()
 
 bool RobotThread::init()
 {
+    m_pThread = new QThread();
+    this->moveToThread(m_pThread);
+
+    connect(m_pThread, &QThread::started, this, &RobotThread::run);
+
     ros::init(m_Init_argc, m_pInit_argv, "pose_echo_threaded");
 
     if (!ros::master::check())
@@ -29,7 +34,8 @@ bool RobotThread::init()
 
     pose_listener = nh.subscribe("odom", 100, &RobotThread::poseCallback, this);
     pose2d_pub = nh.advertise<Pose2D>("/pose2d", 100);
-    start();
+    
+    m_pThread->start();
     return true;
 }//set up ros
 

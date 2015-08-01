@@ -1,11 +1,12 @@
 #ifndef ROBOTTHREAD_H
 #define ROBOTTHREAD_H
 
-#include <iostream>
 #include <stdio.h>
 
+#include <QtCore>
 #include <QString>
-#include <QThread>
+#include <QObject>
+
 
 #include <ros/ros.h>
 #include <ros/network.h>
@@ -14,14 +15,14 @@
 
 typedef ros_threading_example::Pose2D Pose2D;
 
-class RobotThread : public QThread {
+class RobotThread : public QObject {
   Q_OBJECT
 public:
   RobotThread(int argc, char **argv);
   virtual ~RobotThread();
 
   bool init();
-  void run();
+  Q_SLOT void run();
 
   void poseCallback(const nav_msgs::Odometry & msg);
 
@@ -36,6 +37,8 @@ private:
   const char * m_topic;
 
   Pose2D poseMessage;
+
+  QThread * m_pThread;
 
   ros::Subscriber pose_listener;
   ros::Publisher  pose2d_pub;
