@@ -13,7 +13,7 @@ RobotThread::~RobotThread()
         ros::waitForShutdown();
     }//end if
 
-    wait();
+    m_pThread->wait();
 }//end destructor
 
 bool RobotThread::init()
@@ -41,21 +41,33 @@ bool RobotThread::init()
 
 void RobotThread::poseCallback(const nav_msgs::Odometry & msg)
 {
+    QMutex * pMutex = new QMutex();
+    pMutex->lock();
     m_xPos = msg.pose.pose.position.x;
     m_yPos = msg.pose.pose.position.y;
     m_aPos = msg.pose.pose.orientation.w;
-
     std::printf("Pose: (%.4f, %.4f, %.4f)\n", m_xPos, m_yPos, m_aPos);
+    pMutex->unlock();
+
+    delete pMutex;
 }//callback method to echo the robot's position
 
 void RobotThread::run()
 {
     ros::Rate loop_rate(1000);
+
+    QMutex * pMutex;
+
     while (ros::ok())
     {
+        pMutex = new QMutex();
+        pMutex->lock();
         poseMessage.xPose = m_xPos;
         poseMessage.yPose = m_yPos;
-        pose2d_pub.publish(poseMessage);
+        pose2d_pub.publish(poseMessage);\
+        pMutex->unlock();
+
+        delete pMutex;
 
         ros::spinOnce();
         loop_rate.sleep();

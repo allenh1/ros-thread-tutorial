@@ -6,7 +6,7 @@
 #include <QtCore>
 #include <QString>
 #include <QObject>
-
+#include <QMutex>
 
 #include <ros/ros.h>
 #include <ros/network.h>
@@ -25,7 +25,6 @@ public:
   Q_SLOT void run();
 
   void poseCallback(const nav_msgs::Odometry & msg);
-
 private:
   int m_Init_argc;
   char ** m_pInit_argv;
